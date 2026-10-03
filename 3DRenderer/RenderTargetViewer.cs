@@ -68,7 +68,7 @@ public class RenderTargetViewer<T>
             float drawX = (viewportWidth - drawWidth) / 2f;
             float drawY = (currentScreenHeight - drawHeight) / 2f;
 
-            Rectangle sourceRec = new Rectangle(0, 0, _target.Width, _target.Height);
+            Rectangle sourceRec = new Rectangle(0, 0, _target.Width, -_target.Height); //flip y axis
             Rectangle destRec = new Rectangle(drawX, drawY, drawWidth, drawHeight);
 
             Raylib.BeginScissorMode(0, 0, viewportWidth, currentScreenHeight);
