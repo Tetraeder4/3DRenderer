@@ -126,12 +126,12 @@ public class RenderTargetViewer<T>
         yOffset += 30;
 
         Raylib.DrawText($"Zoom: {(_viewportScale * 100):F0}%", panelX + 20, yOffset, 16, Color.White);
+        if (DrawButton("Reset", panelX + 175, yOffset - 10, 65, 30)) _viewportScale = 1.0f;
+        
         yOffset += 25;
 
         _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 30, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
         yOffset += 40;
-        
-        if (DrawButton("100%", panelX + 20, yOffset, 65, 30)) _viewportScale = 1.0f;
     }
 
     private string DrawTextBox(int x, int y, int width, int height, string text, ref bool isActive, ref bool otherActive)
