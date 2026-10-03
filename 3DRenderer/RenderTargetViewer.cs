@@ -128,8 +128,8 @@ public class RenderTargetViewer<T>
         Raylib.DrawText($"Zoom: {(_viewportScale * 100):F0}%", panelX + 20, yOffset, 16, Color.White);
         yOffset += 25;
 
-        _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 20, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
-        yOffset += 30;
+        _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 30, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
+        yOffset += 40;
         
         if (DrawButton("100%", panelX + 20, yOffset, 65, 30)) _viewportScale = 1.0f;
     }
@@ -218,7 +218,7 @@ public class RenderTargetViewer<T>
 
         float handleNormalized = (value - min) / (max - min);
         int handleX = x + (int)(handleNormalized * width);
-        Rectangle handleRect = new Rectangle(handleX - 5, y - 2, 10, height + 4);
+        Rectangle handleRect = new Rectangle(handleX - 5, y - 2, 15, height + 4);
 
         bool isHandleHovered = Raylib.CheckCollisionPointRec(mousePos, handleRect);
         Raylib.DrawRectangleRec(handleRect, isHandleHovered ? Color.White : Color.LightGray);
