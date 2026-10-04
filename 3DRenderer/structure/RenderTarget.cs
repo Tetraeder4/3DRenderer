@@ -1,4 +1,4 @@
-﻿namespace _3DRenderer;
+﻿namespace _3DRenderer.structure;
 
   public class RenderTarget<T> (int w, int h)
 {
