@@ -2,7 +2,7 @@
 
 public static class Rasterizer
 {
-    static bool PointInTriangle(Vector2 vertexA, Vector2 vertexB, Vector2 vertexC, Vector2 pointP)
+    public static bool PointInTriangle(Vector2 vertexA, Vector2 vertexB, Vector2 vertexC, Vector2 pointP)
     {
         // check if point is on the same side of every line
         float d1 = EdgeFunction(vertexA, vertexB, pointP);
@@ -15,7 +15,7 @@ public static class Rasterizer
         return !(hasNeg && hasPos);
     }
         
-    static float EdgeFunction(Vector2 a, Vector2 b, Vector2 p)
+    public static float EdgeFunction(Vector2 a, Vector2 b, Vector2 p)
     {
         return (p.X - a.X) * (b.Y - a.Y) - (p.Y - a.Y) * (b.X - a.X); // =signed determinant of 2x2 mat
     }

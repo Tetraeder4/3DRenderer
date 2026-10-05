@@ -13,8 +13,7 @@ public class RenderObject
     {
         SharedMesh = mesh;
     }
-
-    //localtoworld transform
+    
     public Matrix4x4 GetModelMatrix()
     {
         return Matrix4x4.CreateScale(Scale) *
