@@ -13,4 +13,12 @@ public class Camera
         
         FieldOfView = MathF.PI / 4;
     }
+
+    public Matrix4x4 GetViewMatrix()
+    {
+        Matrix4x4 rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
+        Vector3 forward = Vector3.Transform(Vector3.UnitZ, rotationMatrix); 
+
+        return Matrix4x4.CreateLookAt(Position, Position + forward, Vector3.UnitY);
+    }
 }
