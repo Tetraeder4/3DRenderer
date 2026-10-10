@@ -130,7 +130,7 @@ public class RenderTargetViewer<T>
         yOffset += 25;
 
         _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 30, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
-        yOffset += 40;
+        //yOffset += 40;
     }
 
     private string DrawTextBox(int x, int y, int width, int height, string text, ref bool isActive, ref bool otherActive)
