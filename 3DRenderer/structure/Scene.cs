@@ -3,11 +3,11 @@
 public class Scene
 {
     public Camera Camera { get; set; }
-    public Object[]? Objects { get; set; }
+    public RenderObject[] Objects { get; set; }
 
     public Scene()
     {
         Camera = new Camera();
-        Objects = null;
+        Objects = [];
     }
 }
