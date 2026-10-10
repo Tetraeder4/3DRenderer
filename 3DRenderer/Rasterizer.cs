@@ -1,36 +1,13 @@
-﻿using System.Security.Cryptography;
-
-namespace _3DRenderer;
+﻿namespace _3DRenderer;
 
 public static class Rasterizer
 {
-    public static Scene PrepareScene(Scene scene)
+    public static RenderTarget<Vector3> Render(Scene scene, RenderTarget<Vector3> target)
     {
-        Matrix4x4 viewMatrix = scene.Camera.GetViewMatrix();
-        Matrix4x4 projectionMatrix = scene.Camera.GetPerspectiveProjectionMatrix();
-            
-        foreach (RenderObject renderObject in scene.Objects)
-        {
-            Matrix4x4 modelMatrix = renderObject.GetModelMatrix();
-            Matrix4x4 mvpMatrix = ConstructMvpMatrix(modelMatrix, viewMatrix, projectionMatrix);
-            Matrix4x4 normalMatrix = ConstructNormalMatrix(modelMatrix, viewMatrix);
-            
-            var vertices = renderObject.SharedMesh.Vertices;
-            
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                Vector3 clipPosition = Vector3.Transform(vertices[i].Position, mvpMatrix);
-                
-                Vector3? clipNormal = vertices[i].Normal != null 
-                    ? Vector3.TransformNormal(vertices[i].Normal!.Value, normalMatrix) 
-                    : null;
-                
-                vertices[i] = new Vertex(clipPosition, clipNormal, vertices[i].TexCoord);
-            }
-        }
-
-        return scene;
+        Scene clipSpaceScene = scene.TransformSceneToClipSpace();
+        return Rasterize(clipSpaceScene, target);
     }
+
 
     public static RenderTarget<Vector3> Rasterize(Scene scene, RenderTarget<Vector3> target)
     {
@@ -62,36 +39,20 @@ public static class Rasterizer
             Vector2 b = new Vector2(vertexB.Position.X, vertexB.Position.Y);
             Vector2 c = new Vector2(vertexC.Position.X, vertexC.Position.Y);
             
-            Vector3 Color = vertexA.Position;
+            Vector3 color = vertexA.Position;
             
             for (int y = 0; y < target.Height; y++)
             {
                 for (int x = 0; x < target.Width; x++)
                 {
                     target.Buffer[x,y] = PointInTriangle(a, b, c, new Vector2(x, y))
-                        ? Color
+                        ? color
                         : target.Buffer[x,y];
                 }
             }
         }
         return target;
     }
-
-    public static Matrix4x4 ConstructMvpMatrix(Matrix4x4 modelMatrix, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
-    {
-        return modelMatrix * viewMatrix * projectionMatrix;
-    }
-
-    public static Matrix4x4 ConstructNormalMatrix(Matrix4x4 modelMatrix, Matrix4x4 viewMatrix)
-    {
-        if (Matrix4x4.Invert(modelMatrix * viewMatrix, out Matrix4x4 invertedMatrix))
-        {
-            return Matrix4x4.Transpose(invertedMatrix);
-        }
-
-        Console.WriteLine("modelview matrix is singular and cannot be inverted to calculate normals");
-        return Matrix4x4.Identity;
-    }    
     
     public static bool PointInTriangle(Vector2 vertexA, Vector2 vertexB, Vector2 vertexC, Vector2 pointP)
     {

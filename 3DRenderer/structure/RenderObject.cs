@@ -14,6 +14,8 @@ public class RenderObject
         SharedMesh = mesh;
     }
     
+    public void Update(float deltaTime) {}
+    
     public Matrix4x4 GetModelMatrix()
     {
         return Matrix4x4.CreateScale(Scale) *

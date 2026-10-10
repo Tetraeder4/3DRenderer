@@ -28,6 +28,8 @@ public class Camera
         FieldOfView = MathF.PI / 4; //45deg in rad
     }
 
+    public void Update(float deltaTime) {}
+
     public Matrix4x4 GetPerspectiveProjectionMatrix()
     {
         return Matrix4x4.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane);

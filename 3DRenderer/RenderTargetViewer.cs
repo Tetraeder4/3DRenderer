@@ -2,6 +2,8 @@
 
 public class RenderTargetViewer<T>
 {
+    public Action<float>? OnUpdate { get; set; }
+    
     private RenderTarget<T> _target;
     private Texture2D _texture;
     private Color[] _pixelBuffer;
@@ -39,10 +41,14 @@ public class RenderTargetViewer<T>
             int currentScreenHeight = Raylib.GetScreenHeight();
             int viewportWidth = Math.Max(10, currentScreenWidth - PanelWidth);
 
+            float deltaTime = Raylib.GetFrameTime();
+            OnUpdate?.Invoke(deltaTime);
+            
             UpdatePixelBuffer();
-
             Raylib.BeginDrawing();
             Raylib.ClearBackground(new Color(20, 20, 20, 255));
+            
+            
             
             Raylib.UpdateTexture(_texture, _pixelBuffer);
             

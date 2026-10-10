@@ -4,11 +4,22 @@ class Program
 {
     static void Main()
     {
-        var target = new RenderTarget<Vector3>(64, 64);
+        // set up scene
+        RenderObject testCube = lib.Debug.CreateCube();
+        testCube.Position = new Vector3(0, 0, 5);
+        Globals.MainScene.Objects = [testCube];
+        
         
 
         //launch viewer
-        var viewer = new RenderTargetViewer<Vector3>(target);
+        var viewer = new RenderTargetViewer<Vector3>(Globals.MainRenderTarget);
+        
+        viewer.OnUpdate = deltaTime =>
+        {
+            Globals.MainScene.Update(deltaTime);
+            Rasterizer.Render(Globals.MainScene, Globals.MainRenderTarget);
+        };
+        
         viewer.Run();
     }
 }
