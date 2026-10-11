@@ -16,6 +16,8 @@ class Program
         
         viewer.OnUpdate = deltaTime =>
         {
+            Globals.MainScene.Camera.AspectRatio = (float)Globals.MainRenderTarget.Width / Globals.MainRenderTarget.Height;
+            
             Globals.MainScene.Update(deltaTime);
             Rasterizer.Render(Globals.MainScene, Globals.MainRenderTarget);
         };
