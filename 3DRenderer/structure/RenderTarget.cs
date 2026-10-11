@@ -21,24 +21,26 @@
     
     public void Resize(int w, int h)
     {
-        if (w <= 0 || h <= 0) 
+        if (w <= 0 || h <= 0)
             throw new ArgumentOutOfRangeException();
-        
-        int copyWidth = Math.Min(w, Width);
-        int copyHeight = Math.Min(h, Height);
-        
+
         T?[,] grid = new T?[w, h];
-        
-        for(var y=0; y < copyHeight; y++)
-        for (var x = 0; x < copyWidth; x++)
-        {
-                grid[x, y] = Buffer[x, y];
-        }
-        
+
         Buffer = grid;
         Width = w;
         Height = h;
         Size = new Vector2(w, h);
+    }
+    
+    public void Clear(T? value = default)
+    {
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                Buffer[x, y] = value;
+            }
+        }
     }
 }  
 
