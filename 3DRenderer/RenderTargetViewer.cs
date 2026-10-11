@@ -48,8 +48,6 @@ public class RenderTargetViewer<T>
             Raylib.BeginDrawing();
             Raylib.ClearBackground(new Color(20, 20, 20, 255));
             
-            
-            
             Raylib.UpdateTexture(_texture, _pixelBuffer);
             
             float targetAspect = (float)_target.Width / _target.Height;

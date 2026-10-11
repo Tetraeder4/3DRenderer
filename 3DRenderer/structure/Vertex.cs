@@ -2,9 +2,9 @@
 
 public struct Vertex
 {
-    public Vector3 Position;
-    public Vector3? Normal;
-    public Vector2? TexCoord;
+    public readonly Vector3 Position;
+    public readonly Vector3? Normal;
+    public readonly Vector2? TexCoord;
     public Vertex(Vector3 position, Vector3? normal, Vector2? texCoord)
     {
         Position = position;
@@ -12,3 +12,4 @@ public struct Vertex
         TexCoord = texCoord;
     }
 }
+

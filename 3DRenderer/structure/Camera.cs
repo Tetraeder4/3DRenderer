@@ -11,7 +11,8 @@ public class Camera
     public float FarPlane { get; set; }
     public float FieldOfView { get; set; }
     
-    public float ScreenScale  { get; set; }
+    public float OrthographicHeight { get; set; }
+    
     
     public Camera()
     {
@@ -23,7 +24,7 @@ public class Camera
         NearPlane = 0.1f;
         FarPlane = 100.0f;
         
-        ScreenScale = 5.0f;
+        OrthographicHeight = 5.0f;
         
         FieldOfView = MathF.PI / 4; //45deg in rad
     }
@@ -37,13 +38,18 @@ public class Camera
 
     public Matrix4x4 GetOrthographicProjectionMatrix()
     {
-        return Matrix4x4.CreateOrthographic(AspectRatio, NearPlane, FarPlane, FieldOfView);
+        float height = OrthographicHeight;
+        float width = height * AspectRatio;
+
+        return Matrix4x4.CreateOrthographic(width, height, NearPlane, FarPlane);
     }
+    
     public Matrix4x4 GetViewMatrix()
     {
         Matrix4x4 rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
-        Vector3 forward = Vector3.Transform(Vector3.UnitZ, rotationMatrix); 
-
-        return Matrix4x4.CreateLookAt(Position, Position + forward, CameraUp);
+        Vector3 forward = Vector3.Transform(Vector3.UnitZ, rotationMatrix);
+        Vector3 up = Vector3.Transform(CameraUp, rotationMatrix);
+        
+        return Matrix4x4.CreateLookAt(Position, Position + forward, up);
     }
 }

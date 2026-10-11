@@ -6,8 +6,8 @@ class Program
     {
         // set up scene
         RenderObject testCube = lib.Debug.CreateCube();
-        testCube.Position = new Vector3(0, 0, 5);
-        Globals.MainScene.Objects = [testCube];
+        testCube.Position = new Vector3(0, 0, 3);
+        Globals.MainScene.Objects.Add(testCube);
         
         
 
