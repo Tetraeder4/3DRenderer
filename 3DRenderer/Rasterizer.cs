@@ -5,11 +5,8 @@ public static class Rasterizer
     public static RenderTarget<Vector3> Render(Scene scene, RenderTarget<Vector3> target)
     {
         target.Clear();
-
         ClipScene clipScene = lib.SceneTransforms.TransformToClipSpace(scene);
-        
         Rasterize(clipScene, target);
-        
         return target;
     }
 
