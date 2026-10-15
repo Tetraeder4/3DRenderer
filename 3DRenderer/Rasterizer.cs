@@ -111,6 +111,19 @@ public static class Rasterizer
             (1.0f - ndc.Y) * 0.5f * (height - 1)
             );
     }
+
+    public static Vector3 GetBarycentricCoords(Vector2 a, Vector2 b, Vector2 c, Vector2 p)
+    {
+        float d = (b.Y - c.Y) * (a.X - c.X) + (c.X - b.X) * (a.Y - c.Y);
+        if (d == 0)
+            throw new ArgumentException("Invalid barycentric coordinates.");
+
+        float lambdaA = ((b.Y - c.Y) * (p.X - c.X) + (c.X - b.X) * (p.Y - c.Y)) / d;
+        float lambdaB = ((c.Y - a.Y) * (p.X - c.X) + (a.X - c.X) * (p.Y - c.Y)) / d;
+        float lambdaC = 1 - lambdaA - lambdaB;
+        
+        return new Vector3(lambdaA, lambdaB, lambdaC);
+    }
     
     public static bool PointInTriangle(Vector2 vertexA, Vector2 vertexB, Vector2 vertexC, Vector2 pointP)
     {
