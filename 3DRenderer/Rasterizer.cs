@@ -28,9 +28,9 @@ public static class Rasterizer
                 allVertices.Add(vertex);
             }
 
-            foreach (var indice in renderObject.TriangleIndices)
+            foreach (var index in renderObject.TriangleIndices)
             {
-                allTriangleIndices.Add(indice + startIndex);
+                allTriangleIndices.Add(index + startIndex);
             }
         }
 
