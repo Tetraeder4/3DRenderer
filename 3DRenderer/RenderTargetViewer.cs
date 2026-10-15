@@ -31,7 +31,6 @@ public class RenderTargetViewer<T>
     {
         Raylib.SetConfigFlags(ConfigFlags.HighDpiWindow | ConfigFlags.ResizableWindow);
         Raylib.InitWindow(DefaultWindowWidth, DefaultWindowHeight, "3D Renderer");
-        Raylib.SetTargetFPS(60);
 
         RecreateTexture();
 
@@ -80,6 +79,7 @@ public class RenderTargetViewer<T>
             Raylib.EndScissorMode();
             
             DrawControlPanel(viewportWidth, currentScreenHeight);
+            DrawDebugInformation(20, 20, 200, 20, 16);
 
             Raylib.EndDrawing();
         }
@@ -135,6 +135,15 @@ public class RenderTargetViewer<T>
 
         _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 30, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
         //yOffset += 40;
+    }
+
+    private void DrawDebugInformation(
+        int x, int y, int width, int height, int fontSize)
+    {
+        string text = $"frame time in ms: {Raylib.GetFrameTime() * 1000:F2} \n" +
+                      $"fps: {Raylib.GetFPS()} \n";
+
+        Raylib.DrawText(text, x + 8, y + 8, fontSize, Color.White);
     }
 
     private string DrawTextBox(int x, int y, int width, int height, string text, ref bool isActive, ref bool otherActive)
