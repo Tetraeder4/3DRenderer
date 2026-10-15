@@ -3,6 +3,7 @@
   public class RenderTarget<T> (int w, int h)
 {
     public T?[,] Buffer =  Initialize(w,h);
+    public float?[,] DepthBuffer = new float?[w,h];
     public int Width = w;
     public int Height = h;
     public Vector2 Size = new Vector2(w, h);

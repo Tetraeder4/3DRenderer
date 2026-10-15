@@ -36,8 +36,6 @@ public static class Rasterizer
             ClipVertex vertexA = allVertices[allTriangleIndices[i]];
             ClipVertex vertexB = allVertices[allTriangleIndices[i + 1]];
             ClipVertex vertexC = allVertices[allTriangleIndices[i + 2]];
-
-            
             
             ScreenVertex screenA = ToScreenVertex(vertexA, target.Width, target.Height);
             ScreenVertex screenB = ToScreenVertex(vertexB, target.Width, target.Height);
@@ -57,6 +55,7 @@ public static class Rasterizer
                             screenC.Position,
                             pixelPosition))
                     {
+                        //if target.DepthBuffer[x, y] < 
                         target.Buffer[x, y] = color;
                     }
                 }
@@ -112,16 +111,18 @@ public static class Rasterizer
             );
     }
 
-    public static Vector3 GetBarycentricCoords(Vector2 a, Vector2 b, Vector2 c, Vector2 p)
+    public static Vector3 GetBarycentricCoords(
+        Vector2 a, Vector2 b, Vector2 c, Vector2 p)
     {
-        float d = (b.Y - c.Y) * (a.X - c.X) + (c.X - b.X) * (a.Y - c.Y);
-        if (d == 0)
-            throw new ArgumentException("Invalid barycentric coordinates.");
+        float area = EdgeFunction(a, b, c);
 
-        float lambdaA = ((b.Y - c.Y) * (p.X - c.X) + (c.X - b.X) * (p.Y - c.Y)) / d;
-        float lambdaB = ((c.Y - a.Y) * (p.X - c.X) + (a.X - c.X) * (p.Y - c.Y)) / d;
-        float lambdaC = 1 - lambdaA - lambdaB;
-        
+        if (MathF.Abs(area) < 1e-6f)
+            throw new ArgumentException("Triangle is degenerate.");
+
+        float lambdaA = EdgeFunction(b, c, p) / area;
+        float lambdaB = EdgeFunction(c, a, p) / area;
+        float lambdaC = EdgeFunction(a, b, p) / area;
+
         return new Vector3(lambdaA, lambdaB, lambdaC);
     }
     
