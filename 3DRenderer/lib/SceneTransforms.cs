@@ -45,4 +45,29 @@ public static class SceneTransforms
         
         return new ClipScene(transformedObjects);
     }
+    
+    public static ScreenVertex ToScreenVertex(ClipVertex vertex, int width, int height)
+    {
+        Vector4 clip = vertex.Position;
+
+        if (clip.W <= 0.000001f)
+            throw new ArgumentException("Invalid clip-space position.");
+
+        Vector3 ndc = new(
+            clip.X / clip.W,
+            clip.Y / clip.W,
+            clip.Z / clip.W);
+
+        Vector2 screen = ToScreenCoordinates(ndc, width, height);
+
+        return new ScreenVertex(screen, ndc.Z);
+    }
+    
+    public static Vector2 ToScreenCoordinates(Vector3 ndc, int width, int height)
+    {
+        return new(
+            (ndc.X + 1.0f) * 0.5f * (width - 1),
+            (1.0f - ndc.Y) * 0.5f * (height - 1)
+        );
+    }
 }

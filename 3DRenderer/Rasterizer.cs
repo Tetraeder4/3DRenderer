@@ -13,8 +13,8 @@ public static class Rasterizer
 
     public static RenderTarget<Vector3> Rasterize(ClipScene scene, RenderTarget<Vector3> target)
     {
-        List<ClipVertex> allVertices = new List<ClipVertex>();
-        List<int> allTriangleIndices = new List<int>();
+        List<ClipVertex> allVertices = new ();
+        List<int> allTriangleIndices = new ();
         
         foreach (ClipRenderObject renderObject in scene.Objects)
         {
@@ -37,26 +37,30 @@ public static class Rasterizer
             ClipVertex vertexB = allVertices[allTriangleIndices[i + 1]];
             ClipVertex vertexC = allVertices[allTriangleIndices[i + 2]];
             
-            ScreenVertex screenA = ToScreenVertex(vertexA, target.Width, target.Height);
-            ScreenVertex screenB = ToScreenVertex(vertexB, target.Width, target.Height);
-            ScreenVertex screenC = ToScreenVertex(vertexC, target.Width, target.Height);
+            ScreenVertex screenA = SceneTransforms.ToScreenVertex(vertexA, target.Width, target.Height);
+            ScreenVertex screenB = SceneTransforms.ToScreenVertex(vertexB, target.Width, target.Height);
+            ScreenVertex screenC = SceneTransforms.ToScreenVertex(vertexC, target.Width, target.Height);
             
-            Vector3 color = new Vector3(vertexA.Position.X, vertexB.Position.Y, vertexC.Position.Z);
+            Vector3 color = new(
+                Random.Shared.NextSingle(),
+                Random.Shared.NextSingle(),
+                Random.Shared.NextSingle()
+                );
             
             for (int y = 0; y < target.Height; y++)
             {
                 for (int x = 0; x < target.Width; x++)
                 {
-                    Vector2 pixelPosition = new Vector2(x, y);
-
-                    if (PointInTriangle(
-                            screenA.Position,
-                            screenB.Position,
-                            screenC.Position,
-                            pixelPosition))
+                    if (PointInTriangle(screenA.Position, screenB.Position, screenC.Position, new Vector2(x, y), out Vector3 barycentricWeights))
                     {
-                        //if target.DepthBuffer[x, y] < 
-                        target.Buffer[x, y] = color;
+                        //interpolate Vertex Depths
+                        Vector3 depths = new (screenA.Depth, screenB.Depth, screenC.Depth);
+                        float pixelDepth = Vector3.Dot(depths, barycentricWeights);
+                        
+                        if (pixelDepth > target.DepthBuffer[x, y]) continue;
+
+                        target.DepthBuffer[x, y] =  pixelDepth;
+                        target.ColorBuffer[x, y] = color;
                     }
                 }
             }
@@ -64,78 +68,31 @@ public static class Rasterizer
         return target;
     }
     
-    public static bool TryPerspectiveDivide(ClipVertex vertex, out Vector3 ndc)
-    {
-        Vector4 position = vertex.Position;
-
-        if (position.W <= 0.000001f)
-        {
-            ndc = Vector3.Zero;
-            return false;
-        }
-
-        ndc = new Vector3(
-            position.X / position.W,
-            position.Y / position.W,
-            position.Z / position.W
-            );
-
-        return true;
-    }
-    
-    public static ScreenVertex ToScreenVertex(
-        ClipVertex vertex,
-        int width,
-        int height)
-    {
-        Vector4 clip = vertex.Position;
-
-        if (clip.W <= 0.000001f)
-            throw new ArgumentException("Invalid clip-space position.");
-
-        Vector3 ndc = new Vector3(
-            clip.X / clip.W,
-            clip.Y / clip.W,
-            clip.Z / clip.W);
-
-        Vector2 screen = ToScreenCoordinates(ndc, width, height);
-
-        return new ScreenVertex(screen, ndc.Z);
-    }
-    
-    public static Vector2 ToScreenCoordinates(Vector3 ndc, int width, int height)
-    {
-        return new Vector2(
-            (ndc.X + 1.0f) * 0.5f * (width - 1),
-            (1.0f - ndc.Y) * 0.5f * (height - 1)
-            );
-    }
-
-    public static Vector3 GetBarycentricCoords(
-        Vector2 a, Vector2 b, Vector2 c, Vector2 p)
-    {
-        float area = EdgeFunction(a, b, c);
-
-        if (MathF.Abs(area) < 1e-6f)
-            throw new ArgumentException("Triangle is degenerate.");
-
-        float lambdaA = EdgeFunction(b, c, p) / area;
-        float lambdaB = EdgeFunction(c, a, p) / area;
-        float lambdaC = EdgeFunction(a, b, p) / area;
-
-        return new Vector3(lambdaA, lambdaB, lambdaC);
-    }
-    
-    public static bool PointInTriangle(Vector2 vertexA, Vector2 vertexB, Vector2 vertexC, Vector2 pointP)
+    public static bool PointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p, out Vector3 barycentricCoords)
     {
         // check if point is on the same side of every line
-        float d1 = EdgeFunction(vertexA, vertexB, pointP);
-        float d2 = EdgeFunction(vertexB, vertexC, pointP);
-        float d3 = EdgeFunction(vertexC, vertexA, pointP);
+        float areaAbp = EdgeFunction(a, b, p);
+        float areaBcp = EdgeFunction(b, c, p);
+        float areaCap = EdgeFunction(c, a, p);
 
-        bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
+        bool hasNeg = (areaAbp < 0) || (areaBcp < 0) || (areaCap < 0);
+        bool hasPos = (areaAbp > 0) || (areaBcp > 0) || (areaCap > 0);
+        
+        //calculate normalized baricentric coordinates
+        float totalArea = areaAbp + areaBcp + areaCap;
+        
+        if (totalArea == 0)
+        {
+            barycentricCoords = Vector3.Zero;
+            return false;
+        }
+        
+        barycentricCoords = new(
+            areaBcp / totalArea,
+            areaCap / totalArea,
+            areaAbp / totalArea
+            );
+        
         return !(hasNeg && hasPos);
     }
         

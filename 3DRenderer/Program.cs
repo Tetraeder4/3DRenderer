@@ -34,7 +34,7 @@ var target = new RenderTarget<bool>(800, 600);
         {
             for (int x = 0; x < target.Width; x++)
             {
-                target.Buffer[x, y] = (x + y) % 2 == 0;
+                target.ColorBuffer[x, y] = (x + y) % 2 == 0;
             }
         }
 
@@ -56,7 +56,7 @@ var target = new RenderTarget<Vector3>(100, 100);
             {
                 if (PointInTriangle(vertexA, vertexB, vertexC, new Vector2(x,y)))
                 { 
-                    target.Buffer[x, y] = new Vector3(
+                    target.ColorBuffer[x, y] = new Vector3(
                     (float)x / target.Width,
                     (float)y / target.Height,
                     0.5f

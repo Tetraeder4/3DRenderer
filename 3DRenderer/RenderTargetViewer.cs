@@ -275,7 +275,7 @@ public class RenderTargetViewer<T>
         {
             for (int x = 0; x < _target.Width; x++)
             {
-                T? value = _target.Buffer[x, y];
+                T? value = _target.ColorBuffer[x, y];
                 _pixelBuffer[y * _target.Width + x] = ConvertToColor(value);
             }
         }
