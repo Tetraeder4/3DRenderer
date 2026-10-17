@@ -79,7 +79,7 @@ public class RenderTargetViewer<T>
             Raylib.EndScissorMode();
             
             DrawControlPanel(viewportWidth, currentScreenHeight);
-            DrawDebugInformation(20, 20, 200, 20, 16);
+            DrawDebugInformation(20, 20, 16);
 
             Raylib.EndDrawing();
         }
@@ -139,8 +139,7 @@ public class RenderTargetViewer<T>
         yOffset += 20;
     }
 
-    private void DrawDebugInformation(
-        int x, int y, int width, int height, int fontSize)
+    private void DrawDebugInformation(int x, int y, int fontSize)
     {
         string text = $"frame time in ms: {Raylib.GetFrameTime() * 1000:F2} \n" +
                       $"fps: {Raylib.GetFPS()} \n";
