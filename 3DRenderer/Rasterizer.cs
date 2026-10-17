@@ -40,12 +40,8 @@ public static class Rasterizer
             ScreenVertex screenA = SceneTransforms.ToScreenVertex(vertexA, target.Width, target.Height);
             ScreenVertex screenB = SceneTransforms.ToScreenVertex(vertexB, target.Width, target.Height);
             ScreenVertex screenC = SceneTransforms.ToScreenVertex(vertexC, target.Width, target.Height);
-            
-            Vector3 color = new(
-                Random.Shared.NextSingle(),
-                Random.Shared.NextSingle(),
-                Random.Shared.NextSingle()
-                );
+
+            Vector3 color = Debug.GetRandomColor(i);
             
             for (int y = 0; y < target.Height; y++)
             {

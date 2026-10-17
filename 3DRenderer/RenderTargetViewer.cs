@@ -104,14 +104,12 @@ public class RenderTargetViewer<T>
 
         //width
         Raylib.DrawText("Width:", panelX + 20, yOffset, 16, Color.White);
-        yOffset += 25;
-        _widthText = DrawTextBox(panelX + 20, yOffset, 220, 32, _widthText, ref _editingWidth, ref _editingHeight);
+        _widthText = DrawTextBox(panelX + 80, yOffset - 10, 160, 32, _widthText, ref _editingWidth, ref _editingHeight);
         yOffset += 45;
 
         //height
         Raylib.DrawText("Height:", panelX + 20, yOffset, 16, Color.White);
-        yOffset += 25;
-        _heightText = DrawTextBox(panelX + 20, yOffset, 220, 32, _heightText, ref _editingHeight, ref _editingWidth);
+        _heightText = DrawTextBox(panelX + 80, yOffset - 10, 160, 32, _heightText, ref _editingHeight, ref _editingWidth);
         yOffset += 45;
 
         //apply
@@ -134,7 +132,11 @@ public class RenderTargetViewer<T>
         yOffset += 25;
 
         _viewportScale = Math.Clamp(DrawSlider(panelX + 20, yOffset, 220, 30, _viewportScale, 0.45f, 3.05f), 0.5f, 3.0f);
-        //yOffset += 40;
+        yOffset += 55;
+        
+        //separator
+        Raylib.DrawLine(panelX + 10, yOffset, panelX + PanelWidth - 10, yOffset, Color.DarkGray);
+        yOffset += 20;
     }
 
     private void DrawDebugInformation(
