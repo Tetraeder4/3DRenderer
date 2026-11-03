@@ -5,9 +5,9 @@ class Program
     static void Main()
     {
         // set up scene
-        RenderObject testCube = lib.Debug.CreateCube();
-        testCube.Position = new Vector3(0, 0, 3);
-        Globals.MainScene.Objects.Add(testCube);
+        RenderObject testObject = RenderObjectBuilder.Build("suzane.obj");
+        testObject.Position = new Vector3(0, 0, 5);
+        Globals.MainScene.Objects.Add(testObject);
         
         
 
