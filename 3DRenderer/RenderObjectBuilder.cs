@@ -1,10 +1,34 @@
-﻿using Mesh = _3DRenderer.structure.Mesh;
+﻿using System.Collections.Specialized;
+using Mesh = _3DRenderer.structure.Mesh;
 
 namespace _3DRenderer;
 
 public static class RenderObjectBuilder
 {
-    public static Mesh CreateFromObjString(string objString)
+    public static RenderObject Build(string filename)
+    {
+        return Build(filename, Vector3.Zero, Vector3.Zero , Vector3.One);
+    }
+    
+    public static RenderObject Build(string filename, Vector3 position, Vector3 rotation, Vector3 scale)
+    {
+        RenderObject renderObject = new RenderObject(CreateMeshFromObjString(GetTestFileContentFromName(filename)));
+        
+        renderObject.Position = position;
+        renderObject.Rotation = rotation;
+        renderObject.Scale = scale;
+        
+        return renderObject;
+    }
+
+    private static string GetTestFileContentFromName(string filename)
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, "TestFiles", filename);
+        string content = File.ReadAllText(path);
+        return content;
+    }
+    
+    public static Mesh CreateMeshFromObjString(string objString)
     {
         List<Vector3> allPositions = new();
         List<Vector3> allNormals = new();
@@ -22,7 +46,7 @@ public static class RenderObjectBuilder
             if (line.StartsWith("v "))
             {
                 string[] components = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                // check for "." or ","as a decimal separator
+                // check for . or , as a decimal separator
                 allPositions.Add(new Vector3(
                     float.Parse(components[1], System.Globalization.CultureInfo.InvariantCulture),
                     float.Parse(components[2], System.Globalization.CultureInfo.InvariantCulture),
