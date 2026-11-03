@@ -12,7 +12,8 @@ public static class RenderObjectBuilder
     
     public static RenderObject Build(string filename, Vector3 position, Vector3 rotation, Vector3 scale)
     {
-        RenderObject renderObject = new RenderObject(CreateMeshFromObjString(GetTestFileContentFromName(filename)));
+        string objString = lib.Directory.GetTestFileContentFromName(filename);
+        RenderObject renderObject = new RenderObject(CreateMeshFromObjString(objString));
         
         renderObject.Position = position;
         renderObject.Rotation = rotation;
@@ -21,12 +22,7 @@ public static class RenderObjectBuilder
         return renderObject;
     }
 
-    private static string GetTestFileContentFromName(string filename)
-    {
-        string path = Path.Combine(AppContext.BaseDirectory, "TestFiles", filename);
-        string content = File.ReadAllText(path);
-        return content;
-    }
+
     
     public static Mesh CreateMeshFromObjString(string objString)
     {
