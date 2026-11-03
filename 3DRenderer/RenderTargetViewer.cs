@@ -137,6 +137,11 @@ public class RenderTargetViewer<T>
         //separator
         Raylib.DrawLine(panelX + 10, yOffset, panelX + PanelWidth - 10, yOffset, Color.DarkGray);
         yOffset += 20;
+        
+        if (DrawButton("Open Model Folder", panelX + 20, yOffset, 220, 35))
+        {
+            lib.Directory.Open("TestFiles");
+        }
     }
 
     private void DrawDebugInformation(int x, int y, int fontSize)
