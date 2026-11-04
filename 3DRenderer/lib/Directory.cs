@@ -23,7 +23,7 @@ public static class Directory
     
     public static string GetTestFileContentFromName(string filename)
     {
-        string path = Path.Combine(AppContext.BaseDirectory, "../../../../TestFiles", filename);
+        string path = Path.Combine(AppContext.BaseDirectory, "../../../../", filename);
         string content = File.ReadAllText(path);
         return content;
     }

@@ -5,7 +5,7 @@ class Program
     static void Main()
     {
         // set up scene
-        RenderObject testObject = RenderObjectBuilder.Build("suzane.obj");
+        RenderObject testObject = RenderObjectBuilder.Build("assets/models/suzane.obj");
         testObject.Position = new Vector3(0, 0, 5);
         Globals.MainScene.Objects.Add(testObject);
         

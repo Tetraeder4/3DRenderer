@@ -140,7 +140,7 @@ public class RenderTargetViewer<T>
         
         if (DrawButton("Open Model Folder", panelX + 20, yOffset, 220, 35))
         {
-            lib.Directory.Open("TestFiles");
+            lib.Directory.Open("assets/models");
         }
     }
 

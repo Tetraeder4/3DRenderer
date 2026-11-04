@@ -70,7 +70,7 @@ public static class Debug
 
         var mesh = new Mesh(vertices, triangles);
 
-        return new RenderObject(mesh);
+        return new RenderObject(mesh, "Cube");
     }
 
     public static Vector3 GetRandomColor(int index)

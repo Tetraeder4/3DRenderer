@@ -2,6 +2,7 @@
 
 public class RenderObject
 {
+    public string Name;
     public Mesh SharedMesh { get; set; }
     
     //transform
@@ -9,8 +10,10 @@ public class RenderObject
     public Vector3 Rotation { get; set; } = Vector3.Zero; // pitch yaw roll
     public Vector3 Scale { get; set; } = Vector3.One;
 
-    public RenderObject(Mesh mesh)
+
+    public RenderObject(Mesh mesh, string name = "Unnamed")
     {
+        Name = name;
         SharedMesh = mesh;
     }
 

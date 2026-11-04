@@ -1,5 +1,6 @@
 ﻿namespace _3DRenderer;
 
+
 public static class Rasterizer
 {
     public static RenderTarget<Vector3> Render(Scene scene, RenderTarget<Vector3> target)
@@ -54,9 +55,18 @@ public static class Rasterizer
                         float pixelDepth = Vector3.Dot(depths, barycentricWeights);
                         
                         if (pixelDepth > target.DepthBuffer[x, y]) continue;
+                        
+                        Vector3? normal = (barycentricWeights.X * vertexA.Normal)
+                                        + (barycentricWeights.Y * vertexA.Normal) 
+                                        + (barycentricWeights.Y * vertexA.Normal);
 
-                        target.DepthBuffer[x, y] =  pixelDepth;
-                        target.ColorBuffer[x, y] = color;
+                        Vector2? texCoord = (barycentricWeights.X * vertexA.TexCoord) 
+                                          + (barycentricWeights.Y * vertexA.TexCoord) 
+                                          + (barycentricWeights.Y * vertexA.TexCoord);
+                        
+
+                        target.DepthBuffer[x, y] = pixelDepth;
+                        target.ColorBuffer[x, y] = Globals.MainShader.FragmentColor(new Vector2(x,y), texCoord, normal, pixelDepth, i / 3);
                     }
                 }
             }
