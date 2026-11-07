@@ -1,9 +1,13 @@
-﻿namespace _3DRenderer.structure;
+﻿using _3DRenderer.shading;
+using Shader = _3DRenderer.shading.Shader;
+
+namespace _3DRenderer.structure;
 
 public class RenderObject
 {
     public string Name;
     public Mesh SharedMesh { get; set; }
+    public Shader Shader { get; set; }
     
     //transform
     public Vector3 Position { get; set; } = Vector3.Zero;
@@ -11,10 +15,11 @@ public class RenderObject
     public Vector3 Scale { get; set; } = Vector3.One;
 
 
-    public RenderObject(Mesh mesh, string name = "Unnamed")
+    public RenderObject(Mesh mesh, string name = "Unnamed", Shader? shader = null)
     {
         Name = name;
         SharedMesh = mesh;
+        Shader = shader ?? new RandomTriangleColorShader();
     }
 
     public Action<float> Update = (deltaTime) => {};

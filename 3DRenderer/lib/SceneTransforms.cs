@@ -40,7 +40,7 @@ public static class SceneTransforms
                 transformed[i] = new ClipVertex(position, normal, source[i].TexCoord);
             }
             
-            transformedObjects[objectIndex] = new ClipRenderObject(transformed, triangleIndices.ToArray());
+            transformedObjects[objectIndex] = new ClipRenderObject(transformed, triangleIndices.ToArray(), renderObject.Shader);
         }
         
         return new ClipScene(transformedObjects);

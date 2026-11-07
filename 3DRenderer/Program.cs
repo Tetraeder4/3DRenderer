@@ -1,4 +1,6 @@
-﻿namespace _3DRenderer;
+﻿using _3DRenderer.shading;
+
+namespace _3DRenderer;
 
 class Program
 {
@@ -19,6 +21,7 @@ class Program
         // cube2
         RenderObject testObject2 = RenderObjectBuilder.Build("assets/models/cube.obj");
         testObject2.Position = new Vector3(0, -0.5f, 8);
+        testObject2.Shader = new RandomDepthColorShader();
         Globals.MainScene.Objects.Add(testObject2);
 
         testObject2.Update = deltaTime =>

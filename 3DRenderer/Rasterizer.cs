@@ -49,7 +49,7 @@ public static class Rasterizer
                                 vertexA.TexCoord, vertexB.TexCoord, vertexC.TexCoord, barycentricWeights, clipW);
 
                             target.DepthBuffer[x, y] = pixelDepth;
-                            target.ColorBuffer[x, y] = Globals.MainShader.FragmentColor(
+                            target.ColorBuffer[x, y] = renderObject.Shader.FragmentColor(
                                 new Vector2(x, y), texCoord, normal, pixelDepth, i / 3);
                         }
                     }
