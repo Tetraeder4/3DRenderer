@@ -4,9 +4,9 @@ namespace _3DRenderer.lib;
 
 public static class Debug
 {
-    public static RenderObject CreateCube()
+    public static RenderObject CreateCube(float h)
     {
-        const float h = 0.5f;
+        h /= 2.0f;
 
         var vertices = new Vertex[]
         {
