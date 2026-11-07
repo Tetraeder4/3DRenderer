@@ -40,17 +40,18 @@ public static class Rasterizer
                             if (pixelDepth > target.DepthBuffer[x, y]) continue;
 
                             Vector3 clipW = new Vector3(vertexA.Position.W, vertexB.Position.W, vertexC.Position.W);
+                            Vector3 reciprocalW = Vector3.One / clipW;
                             
-                            Vector3? normal = Interpolate.PerspectiveCorrect(
-                                vertexA.Normal, vertexB.Normal, vertexC.Normal, barycentricWeights, clipW);
+                            Vector2? texCoord = Interpolate.PerspectiveCorrect(vertexA.TexCoord, vertexB.TexCoord, vertexC.TexCoord, barycentricWeights, reciprocalW);
+                            Vector3? normal = Interpolate.PerspectiveCorrect(vertexA.Normal, vertexB.Normal, vertexC.Normal, barycentricWeights, reciprocalW);
                             normal = normal == null ? null : Vector3.Normalize(normal.Value); // normalize after interpolating
 
-                            Vector2? texCoord = Interpolate.PerspectiveCorrect(
-                                vertexA.TexCoord, vertexB.TexCoord, vertexC.TexCoord, barycentricWeights, clipW);
 
+                            float viewDepth = Vector3.Dot(barycentricWeights, reciprocalW);
+                            
                             target.DepthBuffer[x, y] = pixelDepth;
                             target.ColorBuffer[x, y] = renderObject.Shader.FragmentColor(
-                                new Vector2(x, y), texCoord, normal, pixelDepth, i / 3);
+                                new Vector2(x, y), texCoord, normal, viewDepth, i / 3);
                         }
                     }
                 }

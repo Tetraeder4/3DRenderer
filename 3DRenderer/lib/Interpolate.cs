@@ -20,17 +20,15 @@ public static class Interpolate
                / q;
     }
     
-    public static Vector3? PerspectiveCorrect(Vector3? a, Vector3? b, Vector3? c, Vector3 weights, Vector3 clipW)
+    public static Vector3? PerspectiveCorrect(Vector3? a, Vector3? b, Vector3? c, Vector3 weights, Vector3 reciprocalW)
     {
         return a == null || b == null || c == null ?
             null :
-            PerspectiveCorrect(a.Value, b.Value, c.Value, weights, clipW);
+            PerspectiveCorrect(a.Value, b.Value, c.Value, weights, reciprocalW);
     }
     
-    public static Vector3 PerspectiveCorrect(Vector3 a, Vector3 b, Vector3 c, Vector3 weights, Vector3 clipW)
+    public static Vector3 PerspectiveCorrect(Vector3 a, Vector3 b, Vector3 c, Vector3 weights, Vector3 reciprocalW)
     {
-        Vector3 reciprocalW = Vector3.One / clipW;
-        
         float q = Vector3.Dot(weights, reciprocalW);
         
         return (weights.X * a * reciprocalW.X +
