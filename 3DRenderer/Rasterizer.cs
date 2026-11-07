@@ -12,65 +12,53 @@ public static class Rasterizer
     }
 
 
-    public static RenderTarget<Vector3> Rasterize(ClipScene scene, RenderTarget<Vector3> target)
+    public static RenderTarget<Vector3> Rasterize(ClipScene clipScene, RenderTarget<Vector3> target)
     {
-        List<ClipVertex> allVertices = new ();
-        List<int> allTriangleIndices = new ();
-        
-        foreach (ClipRenderObject renderObject in scene.Objects)
+        foreach (ClipRenderObject renderObject in clipScene.Objects)
         {
-            int startIndex = allVertices.Count;
-            
-            foreach (var vertex in renderObject.Vertices )
+            for (int i = 0; i < renderObject.TriangleIndices.Length - 2; i += 3)
             {
-                allVertices.Add(vertex);
-            }
+                ClipVertex vertexA = renderObject.Vertices[renderObject.TriangleIndices[i]];
+                ClipVertex vertexB = renderObject.Vertices[renderObject.TriangleIndices[i + 1]];
+                ClipVertex vertexC = renderObject.Vertices[renderObject.TriangleIndices[i + 2]];
 
-            foreach (var index in renderObject.TriangleIndices)
-            {
-                allTriangleIndices.Add(index + startIndex);
-            }
-        }
+                ScreenVertex screenA = SceneTransforms.ToScreenVertex(vertexA, target.Width, target.Height);
+                ScreenVertex screenB = SceneTransforms.ToScreenVertex(vertexB, target.Width, target.Height);
+                ScreenVertex screenC = SceneTransforms.ToScreenVertex(vertexC, target.Width, target.Height);
 
-        for (int i = 0; i < allTriangleIndices.Count - 2; i += 3)
-        {
-            ClipVertex vertexA = allVertices[allTriangleIndices[i]];
-            ClipVertex vertexB = allVertices[allTriangleIndices[i + 1]];
-            ClipVertex vertexC = allVertices[allTriangleIndices[i + 2]];
-            
-            ScreenVertex screenA = SceneTransforms.ToScreenVertex(vertexA, target.Width, target.Height);
-            ScreenVertex screenB = SceneTransforms.ToScreenVertex(vertexB, target.Width, target.Height);
-            ScreenVertex screenC = SceneTransforms.ToScreenVertex(vertexC, target.Width, target.Height);
+                Vector3 color = Debug.GetRandomColor(i);
 
-            Vector3 color = Debug.GetRandomColor(i);
-            
-            for (int y = 0; y < target.Height; y++)
-            {
-                for (int x = 0; x < target.Width; x++)
+                for (int y = 0; y < target.Height; y++)
                 {
-                    if (PointInTriangle(screenA.Position, screenB.Position, screenC.Position, new Vector2(x, y), out Vector3 barycentricWeights))
+                    for (int x = 0; x < target.Width; x++)
                     {
-                        //interpolate Vertex Depths
-                        Vector3 depths = new (screenA.Depth, screenB.Depth, screenC.Depth);
-                        float pixelDepth = Vector3.Dot(depths, barycentricWeights);
-                        
-                        if (pixelDepth > target.DepthBuffer[x, y]) continue;
-                        
-                        Vector3? normal = (barycentricWeights.X * vertexA.Normal)
-                                        + (barycentricWeights.Y * vertexA.Normal) 
-                                        + (barycentricWeights.Y * vertexA.Normal);
+                        if (PointInTriangle(screenA.Position, screenB.Position, screenC.Position, new Vector2(x, y),
+                                out Vector3 barycentricWeights))
+                        {
+                            //interpolate Vertex Depths
+                            Vector3 depths = new(screenA.Depth, screenB.Depth, screenC.Depth);
+                            float pixelDepth = Vector3.Dot(depths, barycentricWeights);
 
-                        Vector2? texCoord = (barycentricWeights.X * vertexA.TexCoord) 
-                                          + (barycentricWeights.Y * vertexA.TexCoord) 
-                                          + (barycentricWeights.Y * vertexA.TexCoord);
-                        
+                            if (pixelDepth > target.DepthBuffer[x, y]) continue;
 
-                        target.DepthBuffer[x, y] = pixelDepth;
-                        target.ColorBuffer[x, y] = Globals.MainShader.FragmentColor(new Vector2(x,y), texCoord, normal, pixelDepth, i / 3);
+                            Vector3 clipW = new Vector3(vertexA.Position.W, vertexB.Position.W, vertexC.Position.W);
+                            
+                            Vector3? normal = lib.Interpolate.PerspectiveCorrect(
+                                vertexA.Normal, vertexB.Normal, vertexC.Normal, barycentricWeights, clipW);
+                            normal = normal == null ? null : Vector3.Normalize(normal.Value); // normalize after interpolating
+
+                            Vector2? texCoord = lib.Interpolate.PerspectiveCorrect(
+                                vertexA.TexCoord, vertexB.TexCoord, vertexC.TexCoord, barycentricWeights, clipW);
+
+                            target.DepthBuffer[x, y] = pixelDepth;
+                            target.ColorBuffer[x, y] = Globals.MainShader.FragmentColor(new Vector2(x, y), texCoord,
+                                normal, pixelDepth, i / 3);
+                        }
                     }
                 }
             }
         }
+
         return target;
     }
     
