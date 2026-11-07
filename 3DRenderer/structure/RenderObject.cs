@@ -17,10 +17,7 @@ public class RenderObject
         SharedMesh = mesh;
     }
 
-    public void Update(float deltaTime)
-    {
-        Rotation = Rotation + new Vector3(deltaTime/3 , deltaTime, deltaTime/2);
-    }
+    public Action<float> Update = (deltaTime) => {};
     
     public Matrix4x4 GetModelMatrix()
     {
