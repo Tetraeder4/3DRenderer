@@ -13,7 +13,7 @@ public static class RenderObjectBuilder
     public static RenderObject Build(string filename, Vector3 position, Vector3 rotation, Vector3 scale)
     {
         string objString = lib.Directory.GetTestFileContentFromName(filename);
-        RenderObject renderObject = new RenderObject(CreateMeshFromObjString(objString));
+        RenderObject renderObject = new RenderObject(CreateMeshFromObjString(objString), filename.Split("/").Last());
         
         renderObject.Position = position;
         renderObject.Rotation = rotation;
