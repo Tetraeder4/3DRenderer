@@ -29,7 +29,7 @@ class Program
         //launch viewer
         var viewer = new RenderTargetViewer<Vector3>(Globals.MainRenderTarget);
         
-        viewer.OnUpdate = deltaTime =>
+        viewer.Update = deltaTime =>
         {
             Globals.MainScene.Camera.AspectRatio = (float)Globals.MainRenderTarget.Width / Globals.MainRenderTarget.Height;
             

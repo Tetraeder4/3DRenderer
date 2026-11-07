@@ -2,7 +2,7 @@
 
 public class RenderTargetViewer<T>
 {
-    public Action<float>? OnUpdate { get; set; }
+    public Action<float>? Update { get; set; }
     
     private RenderTarget<T> _target;
     private Texture2D _texture;
@@ -41,7 +41,7 @@ public class RenderTargetViewer<T>
             int viewportWidth = Math.Max(10, currentScreenWidth - PanelWidth);
 
             float deltaTime = Raylib.GetFrameTime();
-            OnUpdate?.Invoke(deltaTime);
+            Update?.Invoke(deltaTime);
             
             UpdatePixelBuffer();
             Raylib.BeginDrawing();
